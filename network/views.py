@@ -9,7 +9,7 @@ from .models import *
 
 
 def index(request):
-  posts = NewPost.objects.all()
+  posts = Post.objects.all()
   return render(request, "network/index.html", {
     "posts": posts.order_by('-id'),
   })
@@ -72,13 +72,13 @@ def create_post(request):
     text = request.POST["newPost"]
     poster = request.user
 
-    new_post = NewPost(post=text, poster=poster)
+    new_post = Post(content=text, poster=poster)
     new_post.save()
     return HttpResponseRedirect(reverse("index"))
 
 def toggle_likes(request, post_id):
   if request.method == "POST":
-    post = NewPost.objects.get(pk=post_id)
+    post = Post.objects.get(pk=post_id)
     
     if request.user in post.likes.all():
       post.likes.remove(request.user)
@@ -88,7 +88,7 @@ def toggle_likes(request, post_id):
   return HttpResponseRedirect(reverse("index"))
 
 def profile(request, poster):
-  posts = NewPost.objects.filter(poster__username=poster)
+  posts = Post.objects.filter(poster__username=poster)
   return render(request, "network/profile.html", {
     "posts": posts.order_by('-id'),
     "poster": poster

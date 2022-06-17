@@ -36,7 +36,7 @@
     <div class="card text-bg-light mb-3" style="max-width: 30rem;">
       <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
       <div class="card-body">
-        <p class="card-text">{{ post.post }}</p>
+        <p class="card-text">{{ post.content }}</p>
         <p>{{ post.created }}</p>
         <div>
           <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
