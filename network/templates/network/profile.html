@@ -2,10 +2,20 @@
 
 {% block body %}
   <h1>{{ poster|capfirst }}</h1>
+  
+  <div>
+    <form action="{% url 'follow' poster=poster.id %}" method="post">
+      {% csrf_token %}
+      <button type="submit">Follow</button>
+    </form>
+  </div>
+
+  <p>Following: {{ ussr.following.count }}</p>
+  <p>Followers: {{ ussr.follower.count }}</p>
 
   {% for post in posts %}
   <div class="card text-bg-light mb-3" style="max-width: 30rem;">
-    <div class="card-header"><a href="{% url 'profile' poster=post.poster_id %}">{{ post.poster|capfirst }}</a></div>
+    <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
     <div class="card-body">
       <p class="card-text">{{ post.content }}</p>
       <p>{{ post.created }}</p>

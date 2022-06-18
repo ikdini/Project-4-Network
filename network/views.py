@@ -87,9 +87,26 @@ def toggle_likes(request, post_id):
   
   return HttpResponseRedirect(reverse("index"))
 
+def follow(request, poster):
+  if request.method == "POST":
+    usr = User.objects.get(pk=poster)
+    ussr = request.user
+    ussr.following.add(usr)
+    usr.follower.add(ussr)
+
+    poster = usr.username
+
+    return HttpResponseRedirect(reverse("profile", kwargs={
+    "poster": poster
+    }))
+
 def profile(request, poster):
+  poster = User.objects.get(username=poster)
   posts = Post.objects.filter(poster__username=poster)
+  ussr = poster
+
   return render(request, "network/profile.html", {
     "posts": posts.order_by('-id'),
-    "poster": poster
+    "poster": poster,
+    "ussr": ussr
   })
