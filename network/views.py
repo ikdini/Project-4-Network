@@ -91,8 +91,12 @@ def follow(request, poster):
   if request.method == "POST":
     usr = User.objects.get(pk=poster)
     ussr = request.user
-    ussr.following.add(usr)
-    usr.follower.add(ussr)
+    if usr in ussr.following.all():
+      ussr.following.remove(usr)
+      usr.follower.remove(ussr)
+    else:
+      ussr.following.add(usr)
+      usr.follower.add(ussr)
 
     poster = usr.username
 
@@ -101,12 +105,10 @@ def follow(request, poster):
     }))
 
 def profile(request, poster):
-  poster = User.objects.get(username=poster)
+  Poster = User.objects.get(username=poster)
   posts = Post.objects.filter(poster__username=poster)
-  ussr = poster
-
+  
   return render(request, "network/profile.html", {
     "posts": posts.order_by('-id'),
-    "poster": poster,
-    "ussr": ussr
+    "poster": Poster,
   })
