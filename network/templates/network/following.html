@@ -1,0 +1,31 @@
+{% extends "network/layout.html" %}
+
+{% block title %}
+  Following / Social Network
+{% endblock %}
+
+{% block body %}
+  <h1>Following Posts</h1>
+
+  {% for post in posts %}
+  <div class="card text-bg-light mb-3" style="max-width: 30rem;">
+    <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
+    <div class="card-body">
+      <p class="card-text">{{ post.content }}</p>
+      <p>{{ post.created }}</p>
+      <div>
+        <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
+          {% csrf_token %}
+          {% if user in post.likes.all %}
+            <button id="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+          {% else %}
+            <button id="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+          {% endif %}<span>{{ post.likes.count }}</span>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+    <p>No Posts.</p> 
+  {% endfor %}
+{% endblock %}

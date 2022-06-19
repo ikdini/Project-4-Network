@@ -11,7 +11,7 @@ from .models import *
 def index(request):
   posts = Post.objects.all()
   return render(request, "network/index.html", {
-    "posts": posts.order_by('-id'),
+    "posts": posts.order_by('-id')
   })
 
 
@@ -74,8 +74,9 @@ def create_post(request):
 
     new_post = Post(content=text, poster=poster)
     new_post.save()
-    return HttpResponseRedirect(reverse("index"))
+  return HttpResponseRedirect(reverse("index"))
 
+@login_required(login_url="login")
 def toggle_likes(request, post_id):
   if request.method == "POST":
     post = Post.objects.get(pk=post_id)
@@ -84,10 +85,10 @@ def toggle_likes(request, post_id):
       post.likes.remove(request.user)
     else:
       post.likes.add(request.user)
-  
   return HttpResponseRedirect(reverse("index"))
 
-def follow(request, poster):
+@login_required(login_url="login")
+def toggle_follow(request, poster):
   if request.method == "POST":
     usr = User.objects.get(pk=poster)
     ussr = request.user
@@ -99,16 +100,24 @@ def follow(request, poster):
       usr.follower.add(ussr)
 
     poster = usr.username
-
-    return HttpResponseRedirect(reverse("profile", kwargs={
-    "poster": poster
-    }))
+  return HttpResponseRedirect(reverse("profile", kwargs={
+  "poster": poster
+  }))
 
 def profile(request, poster):
   Poster = User.objects.get(username=poster)
   posts = Post.objects.filter(poster__username=poster)
-  
+
   return render(request, "network/profile.html", {
     "posts": posts.order_by('-id'),
     "poster": Poster,
   })
+
+@login_required(login_url="login")
+def following(request):
+  following = request.user.following.all()
+  posts = Post.objects.filter(poster__in=following)
+  return render(request, "network/following.html", {
+    "posts": posts.order_by('-id')
+  })
+  

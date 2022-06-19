@@ -1,5 +1,9 @@
 {% extends "network/layout.html" %}
 
+{% block title %}
+  {{ poster|capfirst }} / Social Network
+{% endblock %}
+
 {% block body %}
   <h1>{{ poster|capfirst }}</h1>
   
@@ -8,7 +12,7 @@
     <p>Followers: {{ poster.follower.count }}</p>
   {% else %}
     <div>
-      <form action="{% url 'follow' poster=poster.id %}" method="post">
+      <form action="{% url 'toggle_follow' poster=poster.id %}" method="post">
         {% csrf_token %}
         {% if poster in user.following.all %}
           <button type="submit" class="btn btn-danger">Unfollow</button>
@@ -23,23 +27,23 @@
   {% endif %}
 
   {% for post in posts %}
-  <div class="card text-bg-light mb-3" style="max-width: 30rem;">
-    <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
-    <div class="card-body">
-      <p class="card-text">{{ post.content }}</p>
-      <p>{{ post.created }}</p>
-      <div>
-        <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
-          {% csrf_token %}
-          {% if user in post.likes.all %}
-            <button id="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
-          {% else %}
-            <button id="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
-          {% endif %}<span>{{ post.likes.count }}</span>
-        </form>
+    <div class="card text-bg-light mb-3" style="max-width: 30rem;">
+      <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
+      <div class="card-body">
+        <p class="card-text">{{ post.content }}</p>
+        <p>{{ post.created }}</p>
+        <div>
+          <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
+            {% csrf_token %}
+            {% if user in post.likes.all %}
+              <button id="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+            {% else %}
+              <button id="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+            {% endif %}<span>{{ post.likes.count }}</span>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
   {% empty %}
     <p>No Posts.</p> 
   {% endfor %}
