@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body %}
-  <h1>Following Posts</h1>
+  <h3>Following Posts</h3>
 
-  {% for post in posts %}
+  {% for post in page_obj %}
   <div class="card text-bg-light mb-3" style="max-width: 30rem;">
     <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
     <div class="card-body">
@@ -28,4 +28,22 @@
   {% empty %}
     <p>No Posts.</p> 
   {% endfor %}
+
+  {% if posts.exists %}
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+        {% endif %}
+
+        <li class="page-item active" aria-current="page"><a class="page-link">{{ page_obj.number }}</a></li>
+
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}

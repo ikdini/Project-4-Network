@@ -4,14 +4,20 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import *
 
 
 def index(request):
-  posts = Post.objects.all()
+  posts = Post.objects.all().order_by('-id')
+  paginator = Paginator(posts, 10)
+
+  page_number = request.GET.get('page')
+  page_obj = paginator.get_page(page_number)
   return render(request, "network/index.html", {
-    "posts": posts.order_by('-id')
+    'page_obj': page_obj,
+    "posts": posts
   })
 
 
@@ -106,18 +112,28 @@ def toggle_follow(request, poster):
 
 def profile(request, poster):
   Poster = User.objects.get(username=poster)
-  posts = Post.objects.filter(poster__username=poster)
+  posts = Post.objects.filter(poster__username=poster).order_by('-id')
+  paginator = Paginator(posts, 10)
 
+  page_number = request.GET.get('page')
+  page_obj = paginator.get_page(page_number)
   return render(request, "network/profile.html", {
-    "posts": posts.order_by('-id'),
+    'page_obj': page_obj,
     "poster": Poster,
+    "posts": posts
   })
 
 @login_required(login_url="login")
 def following(request):
   following = request.user.following.all()
-  posts = Post.objects.filter(poster__in=following)
+  posts = Post.objects.filter(poster__in=following).order_by('-id')
+  paginator = Paginator(posts, 10)
+
+  page_number = request.GET.get('page')
+  page_obj = paginator.get_page(page_number)
   return render(request, "network/following.html", {
-    "posts": posts.order_by('-id')
+    'page_obj': page_obj,
+    "posts": posts
   })
+
   
