@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block title %}
   Home / Social Network
@@ -9,7 +10,7 @@
 
   {% if user.is_authenticated %}
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    <button id="newpost_button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
       New Post
     </button>
 
@@ -37,7 +38,9 @@
   {% endif %}
 
   {% for post in page_obj %}
-    <div class="card text-bg-light mb-3" style="max-width: 30rem;">
+    <input type="hidden" id="myVar" name="variable" value="{{ post }}">
+
+    <div class="card text-bg-light mb-3">
       <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
       <div class="card-body">
         <p class="card-text">{{ post.content }}</p>
@@ -52,13 +55,44 @@
             {% endif %}<span>{{ post.likes.count }}</span>
           </form>
         </div>
+
+        <div>
+          {% if user == post.poster %}
+            <!-- Button trigger modal -->
+            <button id="editpost_button" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+              Edit
+            </button>
+      
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel2">Edit Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form id="editpost_form">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <textarea name="editpost" class="form-control" id="editpost" rows="10" required maxlength="250"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Post</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   {% empty %}
     <p>No Posts.</p> 
   {% endfor %}
 
-  {% if posts.exists %}
+  {% if posts.exists and page_obj.paginator.num_pages > 1 %}
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         {% if page_obj.has_previous %}
@@ -75,4 +109,8 @@
       </ul>
     </nav>
   {% endif %}
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'network/network.js' %}"></script>
 {% endblock %}

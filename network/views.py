@@ -1,6 +1,7 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -136,4 +137,17 @@ def following(request):
     "posts": posts
   })
 
-  
+@login_required(login_url="login")
+def edit_post(request, post_id):
+  if request.method == "POST":
+    post = Post.objects.get(pk=post_id)
+    new_content = request.POST["editpost"]
+
+    # data = json.loads(request.body)
+    # new_content = data.get("editpost", "")
+
+    post.content = new_content
+    post.save()
+    return JsonResponse({
+      "message": "Post Edited."
+    }, status=201)

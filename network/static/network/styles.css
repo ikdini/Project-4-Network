@@ -1,7 +1,19 @@
 body {
-  margin: 5px;
+  margin: 10px;
 }
 
-#like, #unlike {
+#like, #unlike, #editpost_button {
   --bs-btn-padding-y: .10rem; --bs-btn-padding-x: .10rem; --bs-btn-font-size: .75rem
+}
+
+#newpost_button, #follow_button {
+  margin: 0px 0px 10px 0px;
+}
+
+.mb-3 {
+  max-width: 25rem;
+}
+
+#editpost_button {
+  margin: 10px 0px 0px 0px;
 }

@@ -8,7 +8,7 @@
   <h3>Following Posts</h3>
 
   {% for post in page_obj %}
-  <div class="card text-bg-light mb-3" style="max-width: 30rem;">
+  <div class="card text-bg-light mb-3">
     <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
     <div class="card-body">
       <p class="card-text">{{ post.content }}</p>
@@ -29,7 +29,7 @@
     <p>No Posts.</p> 
   {% endfor %}
 
-  {% if posts.exists %}
+  {% if posts.exists and page_obj.paginator.num_pages > 1 %}
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         {% if page_obj.has_previous %}
