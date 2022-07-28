@@ -1,9 +1,9 @@
 body {
-  margin: 10px;
+  margin: 10px 10px 0px 20px;
 }
 
-#like, #unlike, #editpost_button {
-  --bs-btn-padding-y: .10rem; --bs-btn-padding-x: .10rem; --bs-btn-font-size: .75rem
+#like, #unlike, .editbtnsty, .btn.btn-warning.btn-sm {
+  --bs-btn-padding-y: .10rem; --bs-btn-padding-x: .10rem; --bs-btn-font-size: 0.85rem
 }
 
 #newpost_button, #follow_button {
@@ -16,4 +16,9 @@ body {
 
 #editpost_button {
   margin: 10px 0px 0px 0px;
+}
+
+#btnPrevious,#spanStage,#btnNext {
+  width:33%;
+  display:inline-block;
 }

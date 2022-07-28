@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 
@@ -76,7 +77,7 @@ def register(request):
 @login_required(login_url="login")
 def create_post(request):
   if request.method == "POST":
-    text = request.POST["newPost"]
+    text = request.POST["newPost"].strip()
     poster = request.user
 
     new_post = Post(content=text, poster=poster)
@@ -137,17 +138,17 @@ def following(request):
     "posts": posts
   })
 
+@csrf_exempt
 @login_required(login_url="login")
 def edit_post(request, post_id):
   if request.method == "POST":
     post = Post.objects.get(pk=post_id)
-    new_content = request.POST["editpost"]
 
-    # data = json.loads(request.body)
-    # new_content = data.get("editpost", "")
+    data = json.loads(request.body)
+    new_content = data.get("content", "")
 
     post.content = new_content
+    post.edited = True
     post.save()
-    return JsonResponse({
-      "message": "Post Edited."
-    }, status=201)
+    # return HttpResponseRedirect(reverse("index"))
+    return JsonResponse({"message": "Edited successfully."}, status=201)
