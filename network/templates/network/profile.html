@@ -40,11 +40,11 @@
 
         {% if post.edited %}
           <div id="contentdiv-{{ post.id }}" class="row g-3">
-            <p class="card-text col-auto" id="post-{{ post.id }}">{{ post.content }}</p><span style="margin-bottom: 16px; font-size: 0.7rem; padding-top: 8px;" class="badge text-bg-info col-auto">Edited</span>
+            <p style="font-size: 20px;" class="card-text col-auto" id="post-{{ post.id }}">{{ post.content }}</p><span style="margin: 16px 0px 20px 0px; font-size: 0.8rem; padding-top: 8px;" class="badge text-bg-info col-auto">Edited</span>
           </div>
         {% else %}
           <div id="contentdiv-{{ post.id }}">
-            <p class="card-text" id="post-{{ post.id }}">{{ post.content }}</p>
+            <p style="font-size: 20px;" class="card-text" id="post-{{ post.id }}">{{ post.content }}</p>
           </div>
         {% endif %}
 
@@ -66,16 +66,41 @@
 
         <p><small>{{ post.created }}</small></p>
 
+        {% if user.is_authenticated %}
         <div>
-          <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
+          <form onsubmit="toggleLikes('{{ post.id }}'); return false;">
             {% csrf_token %}
-            {% if user in post.likes.all %}
-              <button id="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
-            {% else %}
-              <button id="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
-            {% endif %}<span>{{ post.likes.count }}</span>
+            <div class="row g-3">
+              {% if user in post.likes.all %}
+              <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                <button id="unlike-{{ post.id }}" name="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+              </div>
+              {% else %}
+              <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                <button id="like-{{ post.id }}" name="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+              </div>
+              {% endif %}<span id="likenum-{{ post.id }}" class="col-auto" style="padding: 0px; font-size: 25px;">{{ post.likes.count }}</span>
+            </div>
           </form>
         </div>
+        {% else %}
+          <div>
+            <form onsubmit="return false;">
+              {% csrf_token %}
+              <div class="row g-3">
+                {% if user in post.likes.all %}
+                <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                  <button id="unlike-{{ post.id }}" name="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+                </div>
+                {% else %}
+                <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                  <button id="like-{{ post.id }}" name="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+                </div>
+                {% endif %}<span id="likenum-{{ post.id }}" class="col-auto" style="padding: 0px; font-size: 25px;">{{ post.likes.count }}</span>
+              </div>
+            </form>
+          </div>
+        {% endif %}
         
         {% if user == post.poster %}
           <!-- Button trigger form -->

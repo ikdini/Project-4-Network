@@ -84,7 +84,7 @@ def create_post(request):
     new_post.save()
   return HttpResponseRedirect(reverse("index"))
 
-@login_required(login_url="login")
+@csrf_exempt
 def toggle_likes(request, post_id):
   if request.method == "POST":
     post = Post.objects.get(pk=post_id)
@@ -93,7 +93,9 @@ def toggle_likes(request, post_id):
       post.likes.remove(request.user)
     else:
       post.likes.add(request.user)
-  return HttpResponseRedirect(reverse("index"))
+
+    likenum = post.likes.count()
+    return JsonResponse(likenum, safe=False)
 
 @login_required(login_url="login")
 def toggle_follow(request, poster):
@@ -139,7 +141,6 @@ def following(request):
   })
 
 @csrf_exempt
-@login_required(login_url="login")
 def edit_post(request, post_id):
   if request.method == "POST":
     post = Post.objects.get(pk=post_id)
@@ -150,5 +151,4 @@ def edit_post(request, post_id):
     post.content = new_content
     post.edited = True
     post.save()
-    # return HttpResponseRedirect(reverse("index"))
     return JsonResponse({"message": "Edited successfully."}, status=201)

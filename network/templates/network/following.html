@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block title %}
   Following / Social Network
@@ -8,23 +9,60 @@
   <h2>Following Posts</h2>
 
   {% for post in page_obj %}
-  <div class="card text-bg-light mb-3">
-    <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
-    <div class="card-body">
-      <p class="card-text">{{ post.content }}</p>
-      <p>{{ post.created }}</p>
-      <div>
-        <form action="{% url 'toggle_likes' post_id=post.id %}" method="post">
-          {% csrf_token %}
-          {% if user in post.likes.all %}
-            <button id="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
-          {% else %}
-            <button id="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
-          {% endif %}<span>{{ post.likes.count }}</span>
-        </form>
+    <div class="card text-bg-light mb-3">
+      <div class="card-header"><a href="{% url 'profile' poster=post.poster %}">{{ post.poster|capfirst }}</a></div>
+      <div class="card-body">
+
+        {% if post.edited %}
+          <div id="contentdiv-{{ post.id }}" class="row g-3">
+            <p style="font-size: 20px;" class="card-text col-auto" id="post-{{ post.id }}">{{ post.content }}</p><span style="margin: 16px 0px 20px 0px; font-size: 0.8rem; padding-top: 8px;" class="badge text-bg-info col-auto">Edited</span>
+          </div>
+        {% else %}
+          <div id="contentdiv-{{ post.id }}">
+            <p style="font-size: 20px;" class="card-text" id="post-{{ post.id }}">{{ post.content }}</p>
+          </div>
+        {% endif %}
+
+        <p><small>{{ post.created }}</small></p>
+
+        {% if user.is_authenticated %}
+        <div>
+          <form onsubmit="toggleLikes('{{ post.id }}'); return false;">
+            {% csrf_token %}
+            <div class="row g-3">
+              {% if user in post.likes.all %}
+              <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                <button id="unlike-{{ post.id }}" name="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+              </div>
+              {% else %}
+              <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                <button id="like-{{ post.id }}" name="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+              </div>
+              {% endif %}<span id="likenum-{{ post.id }}" class="col-auto" style="padding: 0px; font-size: 25px;">{{ post.likes.count }}</span>
+            </div>
+          </form>
+        </div>
+        {% else %}
+          <div>
+            <form onsubmit="return false;">
+              {% csrf_token %}
+              <div class="row g-3">
+                {% if user in post.likes.all %}
+                <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                  <button id="unlike-{{ post.id }}" name="unlike" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart" style="font-size: 20px; color: red;"></i></button>
+                </div>
+                {% else %}
+                <div id="togglelikediv-{{ post.id }}" class="col-auto">
+                  <button id="like-{{ post.id }}" name="like" class="btn btn-outline-light btn-sm" type="submit"><i class="heart fa fa-heart-o" style="font-size: 20px; color: red;"></i></button>
+                </div>
+                {% endif %}<span id="likenum-{{ post.id }}" class="col-auto" style="padding: 0px; font-size: 25px;">{{ post.likes.count }}</span>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+
       </div>
     </div>
-  </div>
   {% empty %}
     <p>No Posts.</p> 
   {% endfor %}
@@ -46,4 +84,8 @@
       </ul>
     </nav>
   {% endif %}
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'network/network.js' %}"></script>
 {% endblock %}
