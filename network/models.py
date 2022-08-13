@@ -15,13 +15,3 @@ class Post(models.Model):
 
   def __str__(self):
     return f"{self.poster} added a new post ({self.pk})"
-  
-  def serialize(self):
-    return {
-      "id": self.id,
-      "content": self.content,
-      "poster": self.poster.username,
-      "created": self.created.strftime("%b %d %Y, %I:%M %p"),
-      "likes": [user.username for user in self.likes.all()],
-      "edited": self.edited
-    }
