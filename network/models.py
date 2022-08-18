@@ -15,3 +15,6 @@ class Post(models.Model):
 
   def __str__(self):
     return f"{self.poster} added a new post ({self.pk})"
+
+  def is_valid_post(self):
+    return self.content != "" and self.poster != None
