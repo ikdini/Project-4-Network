@@ -13,12 +13,11 @@ jobs:
     - name: Install Dependencies
       run: |
         pip3 install --user django
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
     - name: Run Migrations
       run: |
-        python manage.py makemigrations network
-        python manage.py migrate
+        python3 manage.py makemigrations network
+        python3 manage.py migrate
     - name: Run Tests
       run: |
-        python manage.py test
+        python3 manage.py test
