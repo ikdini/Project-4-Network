@@ -121,4 +121,3 @@ class PostTestCase(TestCase):
     response = c.get("/following")
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response.context["posts"].count(), 2)
-    self.assertContains(response, "login")
