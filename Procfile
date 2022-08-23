@@ -1,0 +1,1 @@
+web gunicorn dini-network.wsgi:application --log-file -
