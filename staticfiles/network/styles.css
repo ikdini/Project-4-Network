@@ -1,0 +1,24 @@
+body {
+  margin: 10px 10px 0px 20px;
+}
+
+.btn.btn-outline-light.btn-sm, .editbtnsty, .btn.btn-warning.btn-sm {
+  --bs-btn-padding-y: .10rem; --bs-btn-padding-x: .10rem; --bs-btn-font-size: 0.85rem
+}
+
+#newpost_button, #follow_button {
+  margin: 0px 0px 10px 0px;
+}
+
+.mb-3 {
+  max-width: 25rem;
+}
+
+#editpost_button {
+  margin: 10px 0px 0px 0px;
+}
+
+#btnPrevious,#spanStage,#btnNext {
+  width:33%;
+  display:inline-block;
+}
