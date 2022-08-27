@@ -130,4 +130,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'network/static/network'),)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-django_on_heroku.settings(locals())
+django_on_heroku.settings(locals(), test_runner=False)
